@@ -1,1 +1,38 @@
-# Solutions for notebook 1
+--------------------------------------------------------------------------------------
+# SOLUTION - Question 1: Four Regions
+--------------------------------------------------------------------------------------
+print(staging['Region'].unique())
+
+
+--------------------------------------------------------------------------------------
+# SOLUTION - Question 2: Date range
+--------------------------------------------------------------------------------------
+# First convert the Order Date column to a proper datetime type
+staging['Order Date'] = pd.to_datetime(staging['Order Date'], dayfirst=True)
+
+print(f"Earliest order: {staging['Order Date'].min().date()}")
+print(f"Latest order  : {staging['Order Date'].max().date()}")
+
+
+--------------------------------------------------------------------------------------
+# SOLUTION - Question 3: Technology category count
+--------------------------------------------------------------------------------------
+tech_count = staging[staging['Category'] == 'Technology'].shape[0]
+print(f"Technology rows: {tech_count:,}")
+
+
+--------------------------------------------------------------------------------------
+# SOLUTION - Question 4: Total Sales
+--------------------------------------------------------------------------------------
+total_sales = staging['Sales'].sum()
+print(f"Total Sales: £{total_sales:,.2f}")
+     
+
+--------------------------------------------------------------------------------------
+# SOLUTION - Question 5: Most frequent customer
+--------------------------------------------------------------------------------------
+top_customer = staging['Customer Name'].value_counts().idxmax()
+top_count = staging['Customer Name'].value_counts().max()
+print(f"Most frequent customer: {top_customer} ({top_count} rows)")
+
+     
