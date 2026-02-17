@@ -1,1 +1,62 @@
-# Solutions for Notebook 3
+--------------------------------------------------------------------------------------
+# SOLUTION - Question 1
+--------------------------------------------------------------------------------------
+sql = f"SELECT COUNT(*) AS customer_count FROM `{PROJECT_ID}.{DATASET_ID}.dimCustomer`"
+client.query(sql).to_dataframe()
+     
+
+--------------------------------------------------------------------------------------
+# SOLUTION - Question 2
+--------------------------------------------------------------------------------------
+sql = f"""
+SELECT 
+    g.Region,
+    ROUND(SUM(f.Sales), 2)  AS total_sales,
+    ROUND(SUM(f.Profit), 2) AS total_profit
+FROM `{PROJECT_ID}.{DATASET_ID}.factOrderItem` f
+JOIN `{PROJECT_ID}.{DATASET_ID}.dimGeography` g ON f.Geog_SK = g.Geog_SK
+GROUP BY g.Region
+ORDER BY total_sales DESC
+"""
+client.query(sql).to_dataframe()
+     
+
+--------------------------------------------------------------------------------------
+# SOLUTION - Question 3
+--------------------------------------------------------------------------------------
+sql = f"""
+SELECT 
+    c.CustomerName,
+    ROUND(SUM(f.Sales), 2) AS total_sales
+FROM `{PROJECT_ID}.{DATASET_ID}.factOrderItem` f
+JOIN `{PROJECT_ID}.{DATASET_ID}.dimCustomer` c ON f.Customer_SK = c.Customer_SK
+GROUP BY c.CustomerName
+ORDER BY total_sales DESC
+LIMIT 5
+"""
+client.query(sql).to_dataframe()
+     
+
+--------------------------------------------------------------------------------------
+# SOLUTION - Question 4 (Stretch): Best Sub-Category by Profit per Region
+--------------------------------------------------------------------------------------
+sql = f"""
+WITH ranked AS (
+    SELECT 
+        g.Region,
+        p.SubCategory,
+        ROUND(SUM(f.Profit), 2) AS total_profit,
+        RANK() OVER (PARTITION BY g.Region ORDER BY SUM(f.Profit) DESC) AS rnk
+    FROM `{PROJECT_ID}.{DATASET_ID}.factOrderItem` f
+    JOIN `{PROJECT_ID}.{DATASET_ID}.dimProduct`   p ON f.Product_SK = p.Product_SK
+    JOIN `{PROJECT_ID}.{DATASET_ID}.dimGeography` g ON f.Geog_SK    = g.Geog_SK
+    GROUP BY g.Region, p.SubCategory
+)
+SELECT Region, SubCategory, total_profit
+FROM ranked
+WHERE rnk = 1
+ORDER BY total_profit DESC
+"""
+client.query(sql).to_dataframe()
+
+--------------------------------------------------------------------------------------
