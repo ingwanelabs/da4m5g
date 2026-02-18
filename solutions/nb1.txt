@@ -35,4 +35,5 @@ top_customer = staging['Customer Name'].value_counts().idxmax()
 top_count = staging['Customer Name'].value_counts().max()
 print(f"Most frequent customer: {top_customer} ({top_count} rows)")
 
-     
+#--------------------------------------------------------------------------------------
+
