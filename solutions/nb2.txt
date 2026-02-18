@@ -3,7 +3,7 @@
 #--------------------------------------------------------------------------------------
 dimGeography = (
     staging[['Country', 'City', 'State', 'Postal Code', 'Region']]
-    .drop_duplicates()
+    .drop_duplicates(subset=['City', 'State'])
     .reset_index(drop=True)
 )
 
@@ -13,7 +13,6 @@ dimGeography.columns = ['Geog_SK', 'Country', 'City', 'State', 'PostalCode', 'Re
 
 print(f"dimGeography: {len(dimGeography):,} rows")
 dimGeography.head()
-
 
 #--------------------------------------------------------------------------------------
 # SOLUTION - Question 1
