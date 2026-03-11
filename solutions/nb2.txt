@@ -56,3 +56,26 @@ print("Sales by Year:")
 print(sales_by_year.to_string(index=False))
 
 #--------------------------------------------------------------------------------------
+# STRETCH - Build dimShipMode
+#--------------------------------------------------------------------------------------
+dimShipMode = (
+    staging[['Ship Mode']]
+    .drop_duplicates()
+    .reset_index(drop=True)
+)
+
+dimShipMode.insert(0, 'ShipMode_SK', range(1, len(dimShipMode) + 1))
+dimShipMode.columns = ['ShipMode_SK', 'ShipMode']
+
+print(f"dimShipMode: {len(dimShipMode):,} rows")
+dimShipMode.head()
+
+# Merge in dimShipMode for Ship Mode
+fact = fact.merge(
+    dimShipMode[['ShipMode', 'ShipMode_SK']],
+    left_on='Ship Mode',
+    right_on='ShipMode',
+    how='left'
+)
+
+print(f"After ship mode merge: {len(fact):,} rows")
