@@ -1,46 +1,42 @@
 #--------------------------------------------------------------------------------------
-# SOLUTION - Question 1
+# SOLUTION ~ Question 1: How many customers are in dimCustomer?
 #--------------------------------------------------------------------------------------
-sql = f"SELECT COUNT(*) AS customer_count FROM `{PROJECT_ID}.{DATASET_ID}.dimCustomer`"
-client.query(sql).to_dataframe()
+SELECT COUNT(*) AS customer_count 
+FROM `{PROJECT_ID}.{DATASET_ID}.dimCustomer`
      
 
 #--------------------------------------------------------------------------------------
-# SOLUTION - Question 2
+# SOLUTION ~ Question 2: Total Sales and Profit by Region
 #--------------------------------------------------------------------------------------
-sql = f"""
 SELECT 
     g.Region,
     ROUND(SUM(f.Sales), 2)  AS total_sales,
     ROUND(SUM(f.Profit), 2) AS total_profit
 FROM `{PROJECT_ID}.{DATASET_ID}.factOrderItem` f
-JOIN `{PROJECT_ID}.{DATASET_ID}.dimGeography` g ON f.Geog_SK = g.Geog_SK
+JOIN `{PROJECT_ID}.{DATASET_ID}.dimGeography` g 
+  ON f.Geog_SK = g.Geog_SK
 GROUP BY g.Region
 ORDER BY total_sales DESC
-"""
-client.query(sql).to_dataframe()
+
      
 
 #--------------------------------------------------------------------------------------
-# SOLUTION - Question 3
+# SOLUTION ~ Question 3: Top 5 customers by total Sales
 #--------------------------------------------------------------------------------------
-sql = f"""
 SELECT 
     c.CustomerName,
     ROUND(SUM(f.Sales), 2) AS total_sales
 FROM `{PROJECT_ID}.{DATASET_ID}.factOrderItem` f
-JOIN `{PROJECT_ID}.{DATASET_ID}.dimCustomer` c ON f.Customer_SK = c.Customer_SK
+JOIN `{PROJECT_ID}.{DATASET_ID}.dimCustomer` c 
+  ON f.Customer_SK = c.Customer_SK
 GROUP BY c.CustomerName
 ORDER BY total_sales DESC
 LIMIT 5
-"""
-client.query(sql).to_dataframe()
-     
+
 
 #--------------------------------------------------------------------------------------
-# SOLUTION - Question 4 (Stretch): Best Sub-Category by Profit per Region
+# SOLUTION ~ Question 4: Best Sub-Category by Profit per Region
 #--------------------------------------------------------------------------------------
-sql = f"""
 WITH ranked AS (
     SELECT 
         g.Region,
@@ -56,8 +52,6 @@ SELECT Region, SubCategory, total_profit
 FROM ranked
 WHERE rnk = 1
 ORDER BY total_profit DESC
-"""
-client.query(sql).to_dataframe()
+
 
 #--------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------
